@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Wooder — Analyse meuble</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-height:100vh}
+.c{max-width:680px;margin:0 auto;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.hd h1{font-size:20px;font-weight:800;letter-spacing:-.02em}
+.hd p{font-size:11px;color:#888;margin-top:2px}
+.mt{display:flex;background:#f0f0f0;border-radius:8px;padding:3px}
+.mb{padding:6px 14px;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#888;transition:all .2s}
+.mb.a{background:#2D5A3D;color:#fff}
+.uz{border:2px dashed #ccc;border-radius:12px;text-align:center;cursor:pointer;background:#fff;margin-bottom:14px;transition:border-color .3s;overflow:hidden}
+.uz:hover{border-color:#2D5A3D}
+.uz img{width:100%;display:block;border-radius:10px}
+.uz.np{padding:32px 20px}
+.br{display:flex;gap:8px;margin-bottom:16px}
+.btn{padding:12px 16px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:background .2s}
+.bp{background:#2D5A3D;color:#fff;font-size:14px;flex:1}
+.bp:hover{background:#1e4a2e}
+.bd{background:#1a1a1a;color:#fff;font-size:14px;width:100%}
+.bs{padding:5px 12px;font-size:11px;font-weight:600;border-radius:6px}
+.bg{background:#f0f0f0;color:#888;border:none}
+.bo{background:#fff;border:1px solid #2D5A3D;color:#2D5A3D}
+.ld{text-align:center;padding:28px;background:#EEF4F0;border-radius:12px;margin-bottom:16px}
+.sp{width:32px;height:32px;border:3px solid #2D5A3D;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lm{font-size:13px;font-weight:600;color:#2D5A3D}
+.er{padding:12px 16px;background:#FDEDEC;border-radius:10px;margin-bottom:10px;font-size:12px;color:#C0392B}
+.db{padding:10px 14px;background:#FEF3C7;border-radius:10px;margin-bottom:10px;font-family:'DM Mono',monospace;font-size:9px;color:#92400E;word-break:break-all;max-height:150px;overflow:auto}
+.pr{margin-bottom:14px}
+.pr img{width:100%;display:block;border-radius:10px;border:2px solid #2D5A3D}
+.pr .b{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.pr .b span{font-size:11px;color:#888}
+.eh{background:#1a1a1a;border-radius:12px;padding:16px 18px;margin-bottom:14px;color:#fff}
+.eh h2{font-size:17px;font-weight:800}
+.eh .m{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px}
+.dr{display:flex;gap:8px;margin-top:12px}
+.dr .d{flex:1}
+.dr label{font-size:8px;color:rgba(255,255,255,.35);text-transform:uppercase;display:block}
+.dr input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:6px 8px;font-family:'DM Mono',monospace;font-size:13px;color:#fff;text-align:center}
+.dr .v{padding:6px 8px;font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.5);text-align:center}
+.st{display:flex;gap:6px;margin-bottom:14px}
+.s1{flex:1;background:#EEF4F0;border-radius:8px;padding:8px;text-align:center}
+.s2{flex:1;background:#FEF9E7;border-radius:8px;padding:8px;text-align:center}
+.sn{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:#2D5A3D}
+.s2 .sn{color:#F39C12}
+.sl{font-size:9px;color:#888;text-transform:uppercase}
+.ec{margin-bottom:8px}
+.ee{padding:6px 8px;background:#f8f8f4;border-radius:10px 10px 0 0;border-bottom:1px dashed #e0ddd8}
+.er1{display:flex;align-items:center;gap:4px;margin-bottom:4px;flex-wrap:wrap}
+.ee input[type=text]{flex:1;border:1px solid #ddd;border-radius:4px;padding:3px 8px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;min-width:80px}
+.ee select{border:1px solid #ddd;border-radius:4px;padding:3px 4px;font-family:'DM Sans',sans-serif;font-size:10px;background:#fff}
+.ee input[type=number]{width:42px;border:1px solid #ddd;border-radius:4px;padding:3px 2px;font-family:'DM Mono',monospace;font-size:10px;text-align:center}
+.ee .ns{width:30px}
+.eb{padding:14px 16px;background:#fff;border:1px solid #e8e4df;border-radius:0 0 10px 10px}
+.fb{padding:8px 10px;border-radius:6px;margin-bottom:10px}
+.ft{font-size:10px;font-weight:700;color:#555;text-transform:uppercase;margin-bottom:2px}
+.fd{font-size:12px;color:#333}
+.it{font-size:11px;font-weight:600;color:#F39C12;margin-bottom:6px}
+.io{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fafaf8;border:1px solid #eee;border-radius:8px;cursor:pointer;margin-bottom:4px}
+.io.sel{background:#EEF4F0;border:2px solid #2D5A3D}
+.io input{accent-color:#2D5A3D;margin-top:2px}
+.in{font-size:12px;font-weight:600;color:#333}
+.is{font-size:10px;color:#999;margin-top:1px}
+.ir{font-size:10px;color:#2D5A3D}
+.as{padding:12px;background:#f8f8f4;border-radius:10px;border:1px dashed #ccc;margin-top:8px;margin-bottom:12px}
+.as .at{font-size:11px;font-weight:600;color:#888;margin-bottom:8px}
+.ab{display:flex;gap:4px;flex-wrap:wrap}
+.ab button{padding:6px 12px;background:#fff;border:1px solid #2D5A3D;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:11px;color:#2D5A3D;cursor:pointer;font-weight:600}
+.dn{display:none!important}
+.elb{padding:2px 5px;background:none;border:1px solid #ddd;border-radius:4px;cursor:pointer;font-size:9px}
+.elb:disabled{opacity:.3;cursor:default}
+.elb.dl{border-color:#fca5a5;color:#DC2626}
+.sep{width:1px;height:16px;background:#ddd;margin:0 2px}
+.lbl{font-size:9px;color:#aaa}
+</style>
+</head>
+<body>
+<div class="c">
+  <div class="hd">
+    <div><h1>THE WOODER</h1><p id="sub">Reproduisez un meuble à partir d'une photo</p></div>
+    <div class="mt">
+      <button class="mb a" onclick="setMode('client',this)">Client</button>
+      <button class="mb" onclick="setMode('menuisier',this)">Menuisier</button>
+    </div>
+  </div>
+
+  <div class="uz np" id="uz" onclick="document.getElementById('fi').click()">
+    <input type="file" id="fi" accept="image/*" style="display:none" onchange="pickFile(this)">
+    <div id="ph"><div style="font-size:36px;margin-bottom:6px">📸</div><div style="font-size:14px;color:#666;font-weight:600">Prenez une photo ou choisissez une image</div><div style="font-size:11px;color:#aaa;margin-top:4px">Pinterest, magazine, chez des amis...</div></div>
+    <img id="pv" class="dn">
+  </div>
+
+  <div class="br dn" id="abr">
+    <button class="btn bp" onclick="analyze()">🔍 Analyser le meuble</button>
+    <button class="btn bg bs" onclick="resetAll()">Changer</button>
+  </div>
+
+  <div class="ld dn" id="ldx"><div class="sp"></div><div class="lm" id="lmsg">Analyse...</div></div>
+  <div class="er dn" id="erx"></div>
+  <div class="db dn" id="dbx"></div>
+
+  <div class="dn" id="rx">
+    <div class="pr"><img id="ri"><div class="b"><span>📸 Photo de référence</span><div style="display:flex;gap:6px"><button class="btn bs bo" onclick="analyze()">🔄 Relancer</button><button class="btn bs bg" onclick="resetAll()">Changer</button></div></div></div>
+    <div class="eh"><h2 id="en"></h2><div class="m" id="em"></div>
+      <div class="dr"><div class="d"><label>Largeur</label><input type="number" id="tw" onchange="resizeAll()"></div><div class="d"><label>Hauteur</label><div class="v" id="th"></div></div><div class="d"><label>Profondeur</label><div class="v" id="tp"></div></div></div>
+    </div>
+    <div class="st"><div class="s1"><div class="sn" id="stt">0</div><div class="sl" id="stl">éléments</div></div><div class="s2" id="scb"><div class="sn" id="stc">0</div><div class="sl" id="scl">fermés</div></div></div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px" id="lt"></div>
+    <div style="font-size:11px;color:#888;margin-bottom:12px" id="ls"></div>
+    <div id="el"></div>
+    <div class="as"><div class="at">+ Ajouter un élément manquant</div><div class="ab">
+      <button onclick="addEl('caisson_bas')">+ Caisson bas</button>
+      <button onclick="addEl('caisson_haut')">+ Caisson haut</button>
+      <button onclick="addEl('colonne')">+ Colonne</button>
+      <button onclick="addEl('niche_ouverte')">+ Niche ouverte</button>
+      <button onclick="addEl('demi_colonne')">+ Demi-colonne</button>
+    </div></div>
+    <button class="btn bd" onclick="configAll()" id="cab" style="margin-top:8px">Configurer tout →</button>
+  </div>
+</div>
+
+<script>
+let M='client',imgSrc=null,imgB64=null,imgMime=null,R=null,TW=0;
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('dn');
+const hide=id=>$(id).classList.add('dn');
+
+function setMode(m,b){M=m;document.querySelectorAll('.mb').forEach(x=>x.classList.remove('a'));b.classList.add('a');$('sub').textContent=m==='client'?'Reproduisez un meuble à partir d\'une photo':'Analyse technique — décomposition fabrication';if(R)renderAll()}
+
+function pickFile(inp){
+  const f=inp.files[0];if(!f||!f.type.startsWith('image/'))return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=new Image();
+    img.onload=()=>{
+      const cv=document.createElement('canvas'),mx=800;
+      let w=img.width,h=img.height;
+      if(w>mx||h>mx){if(w>h){h=Math.round(h*mx/w);w=mx}else{w=Math.round(w*mx/h);h=mx}}
+      cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
+      const du=cv.toDataURL('image/jpeg',0.7);
+      imgSrc=du;imgB64=du.split(',')[1];imgMime='image/jpeg';
+      $('pv').src=du;show('pv');hide('ph');$('uz').classList.remove('np');show('abr');hide('rx');R=null;
+    };
+    img.src=e.target.result;
+  };
+  reader.readAsDataURL(f);
+}
+
+function resetAll(){imgSrc=null;imgB64=null;R=null;hide('pv');show('ph');$('uz').classList.add('np');$('uz').classList.remove('dn');hide('abr');hide('rx');hide('erx');hide('dbx');$('fi').value=''}
+
+async function analyze(){
+  if(!imgB64){showErr('Chargez une photo');return}
+  show('ldx');hide('erx');hide('dbx');hide('rx');hide('abr');
+  const msgs=['Analyse...','Scan gauche → droite...','Détection façades...','Structuration...'];
+  let mi=0;$('lmsg').textContent=msgs[0];
+  const iv=setInterval(()=>{mi=(mi+1)%msgs.length;$('lmsg').textContent=msgs[mi]},2200);
+
+  try{
+    showDbg('Image: '+Math.round(imgB64.length/1024)+' Ko');
+
+    const body={
+      model:'claude-sonnet-4-6',
+      max_tokens:4000,
+      system:'Tu es menuisier fabricant. Réponds UNIQUEMENT en JSON valide.',
+      messages:[{role:'user',content:[
+        {type:'image',source:{type:'base64',media_type:imgMime,data:imgB64}},
+        {type:'text',text:'Analyse cette photo de meuble. Identifie chaque CAISSON de fabrication séparé.\n\nRÈGLES :\n- Joues continues du bas en haut = 1 SEUL caisson même avec plusieurs portes\n- Niche ouverte / espace vide = élément séparé\n- Compte chaque porte précisément\n- Décris de GAUCHE à DROITE\n\nRéponds UNIQUEMENT en JSON :\n{"ensemble":{"nom_client":"","nom_technique":"","style":"","materiau_apparent":"","dimensions_totales":{"hauteur":0,"largeur":0,"profondeur":0},"particularites":[]},"elements":[{"id":"E1","nom_client":"","nom_technique":"","type":"colonne ou caisson_bas ou caisson_haut ou niche_ouverte","zone_horizontale":"gauche ou centre ou droite","largeur":0,"hauteur":0,"profondeur":0,"facade":{"type":"portes_battantes ou ouvert ou tiroirs ou mixte","description":"","nb_portes":0,"nb_tiroirs":0,"detail_portes":""},"interieur_visible":false,"suggestions_interieur":[{"option":"","description":"","recommande":true}]}]}'}
+      ]}]
+    };
+
+    let resp;
+    try{
+      resp=await fetch('/api/analyze',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body:JSON.stringify(body)
+      });
+    }catch(fe){clearInterval(iv);showDbg('Fetch: '+fe.message);throw new Error('Erreur réseau')}
+
+    showDbg('HTTP '+resp.status);
+    let raw;
+    try{raw=await resp.text()}catch(te){clearInterval(iv);throw new Error('Lecture impossible')}
+    clearInterval(iv);
+
+    if(!resp.ok){showDbg('Erreur: '+raw.substring(0,300));throw new Error('HTTP '+resp.status)}
+
+    let json;
+    try{json=JSON.parse(raw)}catch{showDbg('Raw: '+raw.substring(0,300));throw new Error('Réponse invalide')}
+    if(json.error){showDbg(JSON.stringify(json.error));throw new Error(json.error.message||'Erreur API')}
+
+    let txt='';
+    if(json.content&&Array.isArray(json.content)){
+      for(const b of json.content){if(b.type==='text'&&b.text)txt+=b.text}
+    }
+    if(!txt.trim()){showDbg('Blocs: '+(json.content||[]).map(b=>b.type).join(','));throw new Error('Aucun texte')}
+
+    let parsed=tryP(txt);
+    if(!parsed){const m=txt.match(/\{[\s\S]*"ensemble"[\s\S]*"elements"[\s\S]*\}/);if(m)parsed=tryP(m[0])}
+    if(!parsed){showDbg('Texte: '+txt.substring(0,400));throw new Error('JSON meuble non trouvé. Relancez.')}
+
+    hide('dbx');R=parsed;TW=R.ensemble?.dimensions_totales?.largeur||0;renderAll();
+  }catch(err){clearInterval(iv);hide('ldx');show('abr');showErr(err.message)}
+}
+
+function tryP(s){if(!s)return null;try{const c=s.replace(/```json|```/g,'').trim();const i=c.indexOf('{'),j=c.lastIndexOf('}');if(i<0||j<0)return null;const o=JSON.parse(c.substring(i,j+1));return o&&o.ensemble?o:null}catch{return null}}
+function showErr(m){$('erx').textContent='⚠️ '+m;show('erx');hide('ldx')}
+function showDbg(m){$('dbx').textContent='🔍 '+m;show('dbx')}
+
+function renderAll(){
+  show('rx');hide('uz');hide('abr');hide('ldx');
+  $('ri').src=imgSrc;
+  const e=R.ensemble||{};
+  $('en').textContent=M==='client'?(e.nom_client||''):(e.nom_technique||'');
+  $('em').textContent=[e.style,e.materiau_apparent,...(e.particularites||[])].filter(Boolean).join(' · ');
+  $('tw').value=TW;
+  $('th').textContent=(e.dimensions_totales?.hauteur||'?')+' cm';
+  $('tp').textContent=(e.dimensions_totales?.profondeur||'?')+' cm';
+  const els=R.elements||[];
+  const cl=els.filter(x=>!x.interieur_visible).length;
+  $('stt').textContent=els.length;$('stl').textContent=M==='client'?'meubles':'éléments';
+  $('stc').textContent=cl;$('scl').textContent=M==='client'?'à configurer':'fermés';
+  $('scb').style.display=cl>0?'':'none';
+  $('lt').textContent=M==='client'?'Vos meubles':'Éléments de fabrication';
+  $('ls').textContent=M==='client'?'Vérifiez, corrigez, puis personnalisez':'Vérifiez et corrigez';
+  $('cab').textContent=M==='client'?'Demander un devis →':'Configurer tout →';
+  renderEls();
+}
+
+function renderEls(){
+  const L=$('el');L.innerHTML='';const els=R.elements||[];
+  const nf=M==='client'?'nom_client':'nom_technique';
+  const ts=['caisson_bas','caisson_haut','colonne','niche_ouverte','demi_colonne','assise','sous_pente','angle'];
+  const zs=['gauche','centre','droite'];
+  const fs=['portes_battantes','porte_coulissante','tiroirs','mixte','ouvert','vitree','aucune'];
+  const fc={portes_battantes:'#E8D5B7',porte_coulissante:'#D4C5A9',tiroirs:'#C9B99A',mixte:'#DED0BC',ouvert:'#EEF4F0',vitree:'#D6E8EE'};
+
+  els.forEach((el,i)=>{
+    const sugs=Array.isArray(el.suggestions_interieur)?el.suggestions_interieur:[];
+    const ri=sugs.findIndex(s=>s.recommande);const si=ri>=0?ri:0;
+    let sh='';
+    if(!el.interieur_visible&&sugs.length>0){
+      sh='<div class="it">Que souhaitez-vous à l\'intérieur ?</div>';
+      sugs.forEach((s,j)=>{sh+=`<div class="io ${j===si?'sel':''}" onclick="selI(this)"><input type="radio" name="i${i}" ${j===si?'checked':''}><div><div class="in">${s.option||''} ${s.recommande?'<span class="ir">★ recommandé</span>':''}</div><div class="is">${s.description||''}</div></div></div>`});
+    }
+    const d=document.createElement('div');d.className='ec';
+    d.innerHTML=`<div class="ee">
+      <div class="er1">
+        <button class="elb" ${i===0?'disabled':''} onclick="mvEl(${i},-1)">◀</button>
+        <button class="elb" ${i===els.length-1?'disabled':''} onclick="mvEl(${i},1)">▶</button>
+        <input type="text" value="${(el[nf]||'').replace(/"/g,'&quot;')}" onchange="R.elements[${i}]['${nf}']=this.value">
+        <select onchange="R.elements[${i}].type=this.value">${ts.map(t=>`<option value="${t}" ${el.type===t?'selected':''}>${t.replace(/_/g,' ')}</option>`).join('')}</select>
+        <select onchange="R.elements[${i}].zone_horizontale=this.value">${zs.map(z=>`<option value="${z}" ${el.zone_horizontale===z?'selected':''}>${z}</option>`).join('')}</select>
+        <button class="elb dl" onclick="dlEl(${i})">✕</button>
+      </div>
+      <div class="er1">
+        <span class="lbl">L</span><input type="number" value="${el.largeur||0}" onchange="R.elements[${i}].largeur=+this.value">
+        <span class="lbl">H</span><input type="number" value="${el.hauteur||0}" onchange="R.elements[${i}].hauteur=+this.value">
+        <span class="lbl">P</span><input type="number" value="${el.profondeur||0}" onchange="R.elements[${i}].profondeur=+this.value">
+        <span style="font-size:8px;color:#ccc">cm</span>
+        <div class="sep"></div>
+        <span class="lbl">🚪</span><input type="number" class="ns" value="${el.facade?.nb_portes||0}" onchange="uF(${i},'nb_portes',+this.value)">
+        <span class="lbl">🗄️</span><input type="number" class="ns" value="${el.facade?.nb_tiroirs||0}" onchange="uF(${i},'nb_tiroirs',+this.value)">
+        <select onchange="uF(${i},'type',this.value)" style="font-size:9px">${fs.map(t=>`<option value="${t}" ${el.facade?.type===t?'selected':''}>${t.replace(/_/g,' ')}</option>`).join('')}</select>
+      </div></div>
+      <div class="eb">
+        <div class="fb" style="background:${fc[el.facade?.type]||'#f5f0eb'}"><div class="ft">Façade</div><div class="fd">${el.facade?.detail_portes||el.facade?.description||'Non précisé'}</div></div>
+        ${sh}
+        <button class="btn bp" style="width:100%;margin-top:10px" onclick="cfgEl(${i})">${M==='client'?'Personnaliser ce meuble →':'Configurer cet élément →'}</button>
+      </div>`;
+    L.appendChild(d);
+  });
+}
+
+function uF(i,k,v){if(!R.elements[i].facade)R.elements[i].facade={};R.elements[i].facade[k]=v}
+function dlEl(i){R.elements.splice(i,1);renderAll()}
+function mvEl(i,d){const e=R.elements,n=i+d;if(n<0||n>=e.length)return;[e[i],e[n]]=[e[n],e[i]];renderAll()}
+function selI(el){const p=el.parentElement;p.querySelectorAll('.io').forEach(o=>{o.classList.remove('sel');o.querySelector('input').checked=false});el.classList.add('sel');el.querySelector('input').checked=true}
+
+function addEl(t){
+  const nm={caisson_bas:['Caisson bas','Caisson bas — à configurer'],caisson_haut:['Caisson haut','Caisson haut — à configurer'],colonne:['Armoire','Colonne — à configurer'],niche_ouverte:['Espace ouvert','Niche ouverte'],demi_colonne:['Meuble mi-hauteur','Demi-colonne']};
+  const n=nm[t]||['Nouveau','Nouveau'];const op=t==='niche_ouverte';
+  R.elements.push({id:'N'+Date.now(),nom_client:n[0],nom_technique:n[1],type:t,zone_horizontale:'centre',largeur:60,hauteur:t==='colonne'?220:op?40:80,profondeur:40,facade:{type:op?'ouvert':'portes_battantes',description:'À définir',nb_portes:op?0:2,nb_tiroirs:0,detail_portes:'À définir'},interieur_visible:op,suggestions_interieur:op?[]:[{option:'Étagères',description:'Réparties',recommande:true},{option:'Penderie',description:'Tringle + étagère',recommande:false}]});
+  renderAll();
+}
+
+function resizeAll(){const nw=+$('tw').value;if(!TW||!nw)return;const r=nw/TW;R.elements.forEach(e=>{e.largeur=Math.round((e.largeur||60)*r)});TW=nw;R.ensemble.dimensions_totales.largeur=nw;renderAll()}
+
+function cfgEl(i){
+  const el=R.elements[i],f=el.facade||{};
+  const cards=document.querySelectorAll('.ec');let int='';
+  if(cards[i]){const s=cards[i].querySelector('.io.sel .in');if(s)int=s.textContent.replace('★ recommandé','').trim()}
+  cpTxt([`Configurer :`,M==='client'?el.nom_client:el.nom_technique,`Type : ${(el.type||'').replace(/_/g,' ')}`,`Dimensions : ${el.largeur}L × ${el.hauteur}H × ${el.profondeur}P cm`,`Façade : ${f.nb_portes||0} porte(s) ${(f.type||'').replace(/_/g,' ')}, ${f.nb_tiroirs||0} tiroir(s)`,f.detail_portes?'Détail : '+f.detail_portes:'',int?'Intérieur : '+int:'',`Matériau : ${R.ensemble?.materiau_apparent||'à définir'}`].filter(Boolean).join('\n'));
+}
+
+function configAll(){
+  const e=R.ensemble||{};
+  const d=(R.elements||[]).map(x=>`${M==='client'?x.nom_client:x.nom_technique} (${x.largeur}×${x.hauteur}×${x.profondeur}cm)`).join('\n');
+  cpTxt(`Ensemble : ${M==='client'?e.nom_client:e.nom_technique}\n${R.elements?.length} éléments :\n${d}\nMatériau : ${e.materiau_apparent||'à définir'}\nDimensions : ${TW}L × ${e.dimensions_totales?.hauteur}H × ${e.dimensions_totales?.profondeur}P cm`);
+}
+
+function cpTxt(t){navigator.clipboard.writeText(t).then(()=>alert('✅ Copié ! Collez dans le configurateur.')).catch(()=>prompt('Copiez :',t))}
+</script>
+</body>
+</html>
