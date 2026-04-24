@@ -379,10 +379,22 @@ function cfgEl(i){
   ].filter(Boolean).join('\n'));
 }
 
-function configAll(){
-  const e=R.ensemble||{};
-  const d=(R.elements||[]).map(x=>`${M==='client'?x.nom_client:x.nom_technique} (${x.largeur}×${x.hauteur}×${x.profondeur}cm)`).join('\n');
-  cpTxt(`Ensemble : ${M==='client'?e.nom_client:e.nom_technique}\n${R.elements?.length} éléments :\n${d}\nMatériau : ${e.materiau_apparent||'à définir'}\nDimensions : ${TW}L × ${e.dimensions_totales?.hauteur}H × ${e.dimensions_totales?.profondeur}P cm`);
+const URL_CALCUL = 'https://oyhampe1992-design.github.io/plateforme2026/calcul.html';
+
+function configAll() {
+  if (!R || !R.elements || R.elements.length === 0) {
+    alert('Rien à envoyer. Analysez d\'abord une photo.');
+    return;
+  }
+  const photoJson = { ensemble: R.ensemble || {}, elements: R.elements || [] };
+  const jsonStr = JSON.stringify(photoJson);
+  const b64 = btoa(unescape(encodeURIComponent(jsonStr)))
+                .replace(/\+/g, '-').replace(/\//g, '_');
+  const urlFinale = URL_CALCUL + '?photo=' + b64;
+  if (urlFinale.length > 1900) {
+    if (!confirm('URL longue (' + urlFinale.length + ' caractères). Continuer ?')) return;
+  }
+  window.open(urlFinale, '_blank');
 }
 
 function cpTxt(t){navigator.clipboard.writeText(t).then(()=>alert('✅ Copié ! Collez dans le configurateur.')).catch(()=>prompt('Copiez :',t))}
