@@ -154,3 +154,11 @@ body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-heigh
     <button class="btn bd" onclick="configAll()" id="cab" style="margin-top:8px">Configurer tout →</button>
   </div>
 </div>
+<script>
+let M='client',imgSrc=null,imgB64=null,imgMime=null,R=null,TW=0;
+const $=id=>document.getElementById(id);
+const show=id=>$(id).classList.remove('dn');
+const hide=id=>$(id).classList.add('dn');
+const URL_CALCUL='https://oyhampe1992-design.github.io/plateforme2026/calcul.html';
+
+function setMode(m,b){M=m;document.querySelectorAll('.mb').forEach(x=>x.classList.remove('a'));b.classList.add('a');$('sub').textContent=m==='client'?'Reproduisez un meu​​​​​​​​​​​​​​​​
