@@ -216,16 +216,37 @@ async function analyze(){
 - Profondeur totale : ${P} cm
 Utilise ces valeurs EXACTES pour ensemble.dimensions_totales et repartis les elements dans cet espace. La somme des largeurs des elements cote a cote doit correspondre a la largeur totale. La hauteur de chaque element ne doit pas depasser la hauteur totale.`;
 
-    const prompt = `Tu es menuisier fabricant expérimenté. Analyse cette photo pour identifier chaque élément de fabrication séparé.
+      const prompt = `Tu es menuisier fabricant expérimenté. Analyse cette photo pour identifier chaque élément de fabrication séparé.
 
 ${dimensionsConnues}
 
-NOMENCLATURE : COL (Colonne pleine hauteur), CB (Caisson bas), CH (Caisson haut), NO (Niche ouverte), DC (Demi-colonne). Sous-éléments : PB (porte battante), PC (porte coulissante), TIR (tiroir), ETG (étagère), PEND (penderie), MI (montant intermédiaire), PLI (plinthe).
+NOMENCLATURE (utilise ces codes) :
+- COL = Colonne (pleine hauteur, joues continues)
+- CB = Caisson bas (posé au sol)
+- CH = Caisson haut (fixé en hauteur ou posé sur un autre élément)
+- NO = Niche ouverte (espace ouvert)
+- DC = Demi-colonne (mi-hauteur)
+Sous-éléments : PB (porte battante), PC (porte coulissante), TIR (tiroir), ETG (étagère), PEND (penderie), MI (montant intermédiaire), PLI (plinthe)
 
-RÈGLES : Joues continues bas→haut = 1 seul élément. Angle/retour = meubles séparés. Matériau différent = élément séparé. Portes et plinthe en applique par défaut. Pieds réglables + plinthe rapportée = norme par défaut. Scanner de gauche à droite, compter précisément chaque porte et tiroir.
+RÈGLES DE DÉCOMPOSITION :
 
-Réponds UNIQUEMENT en JSON :
-{"ensemble":{"nom_client":"","nom_technique":"","style":"","materiau_apparent":"","dimensions_totales":{"hauteur":${H},"largeur":${L},"profondeur":${P}},"particularites":["pieds réglables","plinthe rapportée"]},"elements":[{"id":"COL_01","nom_client":"","nom_technique":"","type":"COL ou CB ou CH ou NO ou DC","zone_horizontale":"gauche ou centre ou droite","zone_verticale":"bas ou milieu ou haut ou pleine_hauteur","largeur":0,"hauteur":0,"profondeur":0,"facade":{"type":"portes_battantes ou ouvert ou tiroirs ou mixte","description":"","nb_portes":0,"nb_tiroirs":0,"nb_etg":0,"detail_portes":"","pose":"applique"},"interieur_visible":false,"suggestions_interieur":[{"option":"","description":"","recommande":true}],"sous_elements":{"MI":0,"PB":0,"PC":0,"TIR":0,"ETG":0,"PEND":0,"PLI":"applique"}}]}`;
+1. MONTANTS : Montant simple entre 2 zones = 1 seul meuble avec MI. Montant doublé (2 panneaux collés) = 2 meubles séparés côte à côte.
+
+2. JOUES CONTINUES : Si les joues latérales montent du bas en haut sans coupure = 1 SEUL élément même avec plusieurs portes. Une traverse horizontale avec des portes de tailles différentes haut/bas dans un même caisson = 1 seul élément, PAS 2 empilés.
+
+3. ANGLES : Un angle/retour = TOUJOURS des meubles séparés. On ne fabrique pas un caisson en L.
+
+4. EMPILEMENTS : CB + NO + CH empilés verticalement = éléments SÉPARÉS, surtout si matériaux différents.
+
+5. NICHES : Une niche dans un matériau différent = TOUJOURS un élément séparé.
+
+6. MATÉRIAUX : Matériaux différents côte à côte ou empilés = très probablement éléments séparés.
+
+7. PORTES : Portes et plinthe EN APPLIQUE par défaut. Compter CHAQUE porte précisément.
+
+8. PIEDS : Pieds réglables + plinthe rapportée = LA NORME par défaut.
+
+9. MURS : Ne PAS confondre un mur blanc avec un mont​​​​​​​​​​​​​​​​
 
     const body={
       model:'claude-sonnet-4-6',
