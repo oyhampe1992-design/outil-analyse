@@ -19,10 +19,20 @@ body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-heigh
 .uz:hover{border-color:#2D5A3D}
 .uz img{width:100%;display:block;border-radius:10px}
 .uz.np{padding:32px 20px}
+.dims{background:#fff;border:1px solid #e8e4df;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.dims .ti{font-size:13px;font-weight:700;margin-bottom:4px;color:#2D5A3D}
+.dims .su{font-size:11px;color:#888;margin-bottom:10px}
+.dims .ro{display:flex;gap:8px}
+.dims .fi{flex:1}
+.dims label{font-size:9px;color:#888;text-transform:uppercase;display:block;margin-bottom:2px}
+.dims .in{display:flex;align-items:center;gap:4px}
+.dims input{width:100%;border:1px solid #ddd;border-radius:6px;padding:8px;font-family:'DM Mono',monospace;font-size:14px;text-align:center}
+.dims .un{font-size:10px;color:#aaa}
 .br{display:flex;gap:8px;margin-bottom:16px}
 .btn{padding:12px 16px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:background .2s}
 .bp{background:#2D5A3D;color:#fff;font-size:14px;flex:1}
 .bp:hover{background:#1e4a2e}
+.bp:disabled{background:#ccc;cursor:not-allowed}
 .bd{background:#1a1a1a;color:#fff;font-size:14px;width:100%}
 .bs{padding:5px 12px;font-size:11px;font-weight:600;border-radius:6px}
 .bg{background:#f0f0f0;color:#888;border:none}
@@ -66,7 +76,7 @@ body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-heigh
 .io{display:flex;align-items:flex-start;gap:8px;padding:8px 12px;background:#fafaf8;border:1px solid #eee;border-radius:8px;cursor:pointer;margin-bottom:4px}
 .io.sel{background:#EEF4F0;border:2px solid #2D5A3D}
 .io input{accent-color:#2D5A3D;margin-top:2px}
-.in{font-size:12px;font-weight:600;color:#333}
+.in2{font-size:12px;font-weight:600;color:#333}
 .is{font-size:10px;color:#999;margin-top:1px}
 .ir{font-size:10px;color:#2D5A3D}
 .as{padding:12px;background:#f8f8f4;border-radius:10px;border:1px dashed #ccc;margin-top:8px;margin-bottom:12px}
@@ -97,8 +107,27 @@ body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-heigh
     <img id="pv" class="dn">
   </div>
 
+  <div class="dims dn" id="dimsForm">
+    <div class="ti">Dimensions totales du projet</div>
+    <div class="su">Mesurez la largeur, hauteur et profondeur totales de ce que vous voulez reproduire.</div>
+    <div class="ro">
+      <div class="fi">
+        <label>Largeur</label>
+        <div class="in"><input type="number" id="dimL" min="1" max="1000" placeholder="80" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+      <div class="fi">
+        <label>Hauteur</label>
+        <div class="in"><input type="number" id="dimH" min="1" max="1000" placeholder="74" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+      <div class="fi">
+        <label>Profondeur</label>
+        <div class="in"><input type="number" id="dimP" min="1" max="1000" placeholder="40" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+    </div>
+  </div>
+
   <div class="br dn" id="abr">
-    <button class="btn bp" onclick="analyze()">🔍 Analyser le meuble</button>
+    <button class="btn bp" id="btnAnalyze" onclick="analyze()" disabled>🔍 Analyser le meuble</button>
     <button class="btn bg bs" onclick="resetAll()">Changer</button>
   </div>
 
@@ -125,12 +154,12 @@ body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-heigh
     <button class="btn bd" onclick="configAll()" id="cab" style="margin-top:8px">Configurer tout →</button>
   </div>
 </div>
-
 <script>
 let M='client',imgSrc=null,imgB64=null,imgMime=null,R=null,TW=0;
 const $=id=>document.getElementById(id);
 const show=id=>$(id).classList.remove('dn');
 const hide=id=>$(id).classList.add('dn');
+const URL_CALCUL='https://oyhampe1992-design.github.io/plateforme2026/calcul.html';
 
 function setMode(m,b){M=m;document.querySelectorAll('.mb').forEach(x=>x.classList.remove('a'));b.classList.add('a');$('sub').textContent=m==='client'?'Reproduisez un meuble à partir d\'une photo':'Analyse technique — décomposition fabrication';if(R)renderAll()}
 
@@ -146,66 +175,57 @@ function pickFile(inp){
       cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);
       const du=cv.toDataURL('image/jpeg',0.7);
       imgSrc=du;imgB64=du.split(',')[1];imgMime='image/jpeg';
-      $('pv').src=du;show('pv');hide('ph');$('uz').classList.remove('np');show('abr');hide('rx');R=null;
+      $('pv').src=du;show('pv');hide('ph');$('uz').classList.remove('np');
+      show('dimsForm');show('abr');hide('rx');R=null;
+      checkDims();
     };
     img.src=e.target.result;
   };
   reader.readAsDataURL(f);
 }
 
-function resetAll(){imgSrc=null;imgB64=null;R=null;hide('pv');show('ph');$('uz').classList.add('np');$('uz').classList.remove('dn');hide('abr');hide('rx');hide('erx');hide('dbx');$('fi').value=''}
+function checkDims(){
+  const L=+$('dimL').value,H=+$('dimH').value,P=+$('dimP').value;
+  $('btnAnalyze').disabled=!(L>0&&H>0&&P>0);
+}
+
+function resetAll(){
+  imgSrc=null;imgB64=null;R=null;
+  hide('pv');show('ph');$('uz').classList.add('np');$('uz').classList.remove('dn');
+  hide('dimsForm');hide('abr');hide('rx');hide('erx');hide('dbx');
+  $('fi').value='';$('dimL').value='';$('dimH').value='';$('dimP').value='';
+  $('btnAnalyze').disabled=true;
+}
 
 async function analyze(){
   if(!imgB64){showErr('Chargez une photo');return}
-  show('ldx');hide('erx');hide('dbx');hide('rx');hide('abr');
+  const L=+$('dimL').value,H=+$('dimH').value,P=+$('dimP').value;
+  if(!(L>0&&H>0&&P>0)){showErr('Renseigne les 3 dimensions avant analyse.');return}
+
+  show('ldx');hide('erx');hide('dbx');hide('rx');hide('abr');hide('dimsForm');
   const msgs=['Analyse...','Scan gauche → droite...','Détection façades...','Structuration...'];
   let mi=0;$('lmsg').textContent=msgs[0];
   const iv=setInterval(()=>{mi=(mi+1)%msgs.length;$('lmsg').textContent=msgs[mi]},2200);
 
   try{
-    showDbg('Image: '+Math.round(imgB64.length/1024)+' Ko');
+    showDbg('Image: '+Math.round(imgB64.length/1024)+' Ko — Dims: '+L+'×'+H+'×'+P+' cm');
+
+    const dimensionsConnues=`DIMENSIONS TOTALES CONNUES (donnees par l'utilisateur, a utiliser en priorite) :
+- Largeur totale : ${L} cm
+- Hauteur totale : ${H} cm
+- Profondeur totale : ${P} cm
+Utilise ces valeurs EXACTES pour ensemble.dimensions_totales et repartis les elements dans cet espace. La somme des largeurs des elements cote a cote doit correspondre a la largeur totale. La hauteur de chaque element ne doit pas depasser la hauteur totale.`;
 
     const prompt = `Tu es menuisier fabricant expérimenté. Analyse cette photo pour identifier chaque élément de fabrication séparé.
 
-NOMENCLATURE (utilise ces codes) :
-- COL = Colonne (pleine hauteur, joues continues)
-- CB = Caisson bas (posé au sol)
-- CH = Caisson haut (fixé en hauteur ou posé sur un autre élément)
-- NO = Niche ouverte (espace ouvert)
-- DC = Demi-colonne (mi-hauteur)
-Sous-éléments : PB (porte battante), PC (porte coulissante), TIR (tiroir), ETG (étagère), PEND (penderie), MI (montant intermédiaire), PLI (plinthe)
+${dimensionsConnues}
 
-RÈGLES DE DÉCOMPOSITION :
+NOMENCLATURE : COL (Colonne pleine hauteur), CB (Caisson bas), CH (Caisson haut), NO (Niche ouverte), DC (Demi-colonne). Sous-éléments : PB (porte battante), PC (porte coulissante), TIR (tiroir), ETG (étagère), PEND (penderie), MI (montant intermédiaire), PLI (plinthe).
 
-1. MONTANTS : Montant simple entre 2 zones = 1 seul meuble avec MI. Montant doublé (2 panneaux collés) = 2 meubles séparés côte à côte.
-
-2. JOUES CONTINUES : Si les joues latérales montent du bas en haut sans coupure = 1 SEUL élément même avec plusieurs portes. Une traverse horizontale avec des portes de tailles différentes haut/bas dans un même caisson = 1 seul élément, PAS 2 empilés.
-
-3. ANGLES : Un angle/retour = TOUJOURS des meubles séparés. On ne fabrique pas un caisson en L.
-
-4. EMPILEMENTS : CB + NO + CH empilés verticalement = éléments SÉPARÉS, surtout si matériaux différents. Ne pas regrouper en "colonne".
-
-5. NICHES : Une niche dans un matériau différent (ex: chêne dans du gris) = TOUJOURS un élément séparé. Des spots LED intégrés confirment que c'est un élément distinct.
-
-6. MATÉRIAUX : Matériaux différents côte à côte ou empilés = très probablement éléments séparés.
-
-7. PORTES : Portes et plinthe EN APPLIQUE par défaut (recouvrent le cadre). Compter CHAQUE porte précisément. Distinguer portes côte à côte vs empilées.
-
-8. PIEDS : Pieds réglables + plinthe rapportée = LA NORME par défaut. Ne pas confondre avec un meuble posé au sol directement.
-
-9. MURS : Ne PAS confondre un mur blanc avec un montant de meuble.
-
-10. INSTALLATION : Identifier si le meuble est entre 2 murs, en niche, en angle, ou libre.
-
-MÉTHODE D'ANALYSE :
-a) Scanner de GAUCHE à DROITE
-b) Pour chaque zone, scanner de BAS en HAUT
-c) Vérifier les montants : simples ou doublés ?
-d) Vérifier les matériaux : changement = élément séparé ?
-e) Compter précisément chaque porte et tiroir
+RÈGLES : Joues continues bas→haut = 1 seul élément. Angle/retour = meubles séparés. Matériau différent = élément séparé. Portes et plinthe en applique par défaut. Pieds réglables + plinthe rapportée = norme par défaut. Scanner de gauche à droite, compter précisément chaque porte et tiroir.
 
 Réponds UNIQUEMENT en JSON :
-{"ensemble":{"nom_client":"","nom_technique":"","style":"","materiau_apparent":"","dimensions_totales":{"hauteur":0,"largeur":0,"profondeur":0},"particularites":["pieds réglables","plinthe rapportée","entre 2 murs"]},"elements":[{"id":"COL_01","nom_client":"","nom_technique":"","type":"COL ou CB ou CH ou NO ou DC","zone_horizontale":"gauche ou centre ou droite","zone_verticale":"bas ou milieu ou haut ou pleine_hauteur","largeur":0,"hauteur":0,"profondeur":0,"facade":{"type":"portes_battantes ou ouvert ou tiroirs ou mixte","description":"","nb_portes":0,"nb_tiroirs":0,"nb_etg":0,"detail_portes":"","pose":"applique"},"interieur_visible":false,"suggestions_interieur":[{"option":"","description":"","recommande":true}],"sous_elements":{"MI":0,"PB":0,"PC":0,"TIR":0,"ETG":0,"PEND":0,"PLI":"applique"}}]}`;
+{"ensemble":{"nom_client":"","nom_technique":"","style":"","materiau_apparent":"","dimensions_totales":{"hauteur":${H},"largeur":${L},"profondeur":${P}},"particularites":["pieds réglables","plinthe rapportée"]},"elements":[{"id":"COL_01","nom_client":"","nom_technique":"","type":"COL ou CB ou CH ou NO ou DC","zone_horizontale":"gauche ou centre ou droite","zone_verticale":"bas ou milieu ou haut ou pleine_hauteur","largeur":0,"hauteur":0,"profondeur":0,"facade":{"type":"portes_battantes ou ouvert ou tiroirs ou mixte","description":"","nb_portes":0,"nb_tiroirs":0,"nb_etg":0,"detail_portes":"","pose":"applique"},"interieur_visible":false,"suggestions_interieur":[{"option":"","description":"","recommande":true}],"sous_elements":{"MI":0,"PB":0,"PC":0,"TIR":0,"ETG":0,"PEND":0,"PLI":"applique"}}]}`;
 
     const body={
       model:'claude-sonnet-4-6',
@@ -219,11 +239,7 @@ Réponds UNIQUEMENT en JSON :
 
     let resp;
     try{
-      resp=await fetch('/api/analyze',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify(body)
-      });
+      resp=await fetch('/api/analyze',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     }catch(fe){clearInterval(iv);showDbg('Fetch: '+fe.message);throw new Error('Erreur réseau')}
 
     showDbg('HTTP '+resp.status);
@@ -247,16 +263,15 @@ Réponds UNIQUEMENT en JSON :
     if(!parsed){const m=txt.match(/\{[\s\S]*"ensemble"[\s\S]*"elements"[\s\S]*\}/);if(m)parsed=tryP(m[0])}
     if(!parsed){showDbg('Texte: '+txt.substring(0,400));throw new Error('JSON meuble non trouvé. Relancez.')}
 
-    hide('dbx');R=parsed;TW=R.ensemble?.dimensions_totales?.largeur||0;renderAll();
-  }catch(err){clearInterval(iv);hide('ldx');show('abr');showErr(err.message)}
+    hide('dbx');R=parsed;TW=R.ensemble?.dimensions_totales?.largeur||L;renderAll();
+  }catch(err){clearInterval(iv);hide('ldx');show('abr');show('dimsForm');showErr(err.message)}
 }
-
 function tryP(s){if(!s)return null;try{const c=s.replace(/```json|```/g,'').trim();const i=c.indexOf('{'),j=c.lastIndexOf('}');if(i<0||j<0)return null;const o=JSON.parse(c.substring(i,j+1));return o&&o.ensemble?o:null}catch{return null}}
 function showErr(m){$('erx').textContent='⚠️ '+m;show('erx');hide('ldx')}
 function showDbg(m){$('dbx').textContent='🔍 '+m;show('dbx')}
 
 function renderAll(){
-  show('rx');hide('uz');hide('abr');hide('ldx');
+  show('rx');hide('uz');hide('dimsForm');hide('abr');hide('ldx');
   $('ri').src=imgSrc;
   const e=R.ensemble||{};
   $('en').textContent=M==='client'?(e.nom_client||''):(e.nom_technique||'');
@@ -290,10 +305,9 @@ function renderEls(){
     let sh='';
     if(!el.interieur_visible&&sugs.length>0){
       sh='<div class="it">Que souhaitez-vous à l\'intérieur ?</div>';
-      sugs.forEach((s,j)=>{sh+=`<div class="io ${j===si?'sel':''}" onclick="selI(this)"><input type="radio" name="i${i}" ${j===si?'checked':''}><div><div class="in">${s.option||''} ${s.recommande?'<span class="ir">★ recommandé</span>':''}</div><div class="is">${s.description||''}</div></div></div>`});
+      sugs.forEach((s,j)=>{sh+=`<div class="io ${j===si?'sel':''}" onclick="selI(this)"><input type="radio" name="i${i}" ${j===si?'checked':''}><div><div class="in2">${s.option||''} ${s.recommande?'<span class="ir">★ recommandé</span>':''}</div><div class="is">${s.description||''}</div></div></div>`});
     }
 
-    // Sous-éléments display
     const se=el.sous_elements||{};
     let seHtml='';
     const seParts=[];
@@ -333,7 +347,6 @@ function renderEls(){
         ${seHtml}
         <div class="fb" style="background:${fc[el.facade?.type]||'#f5f0eb'}"><div class="ft">Façade · ${el.facade?.pose||'applique'}</div><div class="fd">${el.facade?.detail_portes||el.facade?.description||'Non précisé'}</div></div>
         ${sh}
-        <button class="btn bp" style="width:100%;margin-top:10px" onclick="cfgEl(${i})">${M==='client'?'Personnaliser ce meuble →':'Configurer cet élément →'}</button>
       </div>`; 
     L.appendChild(d);
   });
@@ -346,92 +359,51 @@ function mvEl(i,d){const e=R.elements,n=i+d;if(n<0||n>=e.length)return;[e[i],e[n
 function selI(el){const p=el.parentElement;p.querySelectorAll('.io').forEach(o=>{o.classList.remove('sel');o.querySelector('input').checked=false});el.classList.add('sel');el.querySelector('input').checked=true}
 
 function addEl(t){
-  const nm={CB:['Caisson bas','CB — à configurer'],CH:['Caisson haut','CH — à configurer'],COL:['Armoire','COL — à configurer'],NO:['Espace ouvert','NO — à configurer'],DC:['Meuble mi-hauteur','DC — à configurer'],caisson_bas:['Caisson bas','CB — à configurer'],caisson_haut:['Caisson haut','CH — à configurer'],colonne:['Armoire','COL — à configurer'],niche_ouverte:['Espace ouvert','NO — à configurer'],demi_colonne:['Meuble mi-hauteur','DC — à configurer']};
-  const n=nm[t]||['Nouveau','Nouveau'];const op=t==='NO'||t==='niche_ouverte';
-  R.elements.push({id:t.replace(/_.*/,'')+'_'+(R.elements.length+1),nom_client:n[0],nom_technique:n[1],type:t,zone_horizontale:'centre',largeur:60,hauteur:t==='COL'||t==='colonne'?220:op?40:80,profondeur:40,facade:{type:op?'ouvert':'portes_battantes',description:'À définir',nb_portes:op?0:2,nb_tiroirs:0,detail_portes:'À définir',pose:'applique'},interieur_visible:op,sous_elements:{MI:0,PB:op?0:2,TIR:0,ETG:op?3:0,PEND:0,PLI:'applique'},suggestions_interieur:op?[]:[{option:'Étagères',description:'Réparties',recommande:true},{option:'Penderie',description:'Tringle + étagère',recommande:false}]});
+  const nm={CB:['Caisson bas','CB — à configurer'],CH:['Caisson haut','CH — à configurer'],COL:['Armoire','COL — à configurer'],NO:['Espace ouvert','NO — à configurer'],DC:['Meuble mi-hauteur','DC — à configurer']};
+  const n=nm[t]||['Nouveau','Nouveau'];const op=t==='NO';
+  R.elements.push({id:t+'_'+(R.elements.length+1),nom_client:n[0],nom_technique:n[1],type:t,zone_horizontale:'centre',largeur:60,hauteur:t==='COL'?220:op?40:80,profondeur:40,facade:{type:op?'ouvert':'portes_battantes',description:'À définir',nb_portes:op?0:2,nb_tiroirs:0,detail_portes:'À définir',pose:'applique'},interieur_visible:op,sous_elements:{MI:0,PB:op?0:2,TIR:0,ETG:op?3:0,PEND:0,PLI:'applique'},suggestions_interieur:op?[]:[{option:'Étagères',description:'Réparties',recommande:true},{option:'Penderie',description:'Tringle + étagère',recommande:false}]});
   renderAll();
 }
 
 function resizeAll(){const nw=+$('tw').value;if(!TW||!nw)return;const r=nw/TW;R.elements.forEach(e=>{e.largeur=Math.round((e.largeur||60)*r)});TW=nw;R.ensemble.dimensions_totales.largeur=nw;renderAll()}
 
-function cfgEl(i){
-  const el=R.elements[i],f=el.facade||{},se=el.sous_elements||{};
-  const cards=document.querySelectorAll('.ec');let int='';
-  if(cards[i]){const s=cards[i].querySelector('.io.sel .in');if(s)int=s.textContent.replace('★ recommandé','').trim()}
-  const seParts=[];
-  if(se.MI)seParts.push('MI:'+se.MI);
-  if(se.PB||f.nb_portes)seParts.push('PB:'+(se.PB||f.nb_portes||0));
-  if(se.PC)seParts.push('PC:'+se.PC);
-  if(se.TIR||f.nb_tiroirs)seParts.push('TIR:'+(se.TIR||f.nb_tiroirs||0));
-  if(se.ETG||f.nb_etg)seParts.push('ETG:'+(se.ETG||f.nb_etg||0));
-  if(se.PEND)seParts.push('PEND:'+se.PEND);
-  cpTxt([
-    'Configurer dans The Wooder :',
-    el.id+' — '+(M==='client'?el.nom_client:el.nom_technique),
-    'Type : '+(el.type||''),
-    'Dimensions : '+el.largeur+'L × '+el.hauteur+'H × '+el.profondeur+'P cm',
-    'Façade : '+f.nb_portes+' PB '+((f.type||'').replace(/_/g,' '))+', '+f.nb_tiroirs+' TIR, pose '+(f.pose||'applique'),
-    f.detail_portes?'Détail : '+f.detail_portes:'',
-    seParts.length>0?'Sous-éléments : '+seParts.join(', '):'',
-    int?'Intérieur : '+int:'',
-    'Matériau : '+(R.ensemble?.materiau_apparent||'à définir'),
-    'PLI : '+(se.PLI||'applique')
-  ].filter(Boolean).join('\n'));
-}
-
-const URL_CALCUL = 'https://oyhampe1992-design.github.io/plateforme2026/calcul.html';
-
-function configAll() {
-  if (!R || !R.elements || R.elements.length === 0) {
-    alert('Rien à envoyer. Analysez d\'abord une photo.');
-    return;
-  }
-
-  // Elagage : on ne garde que ce que le mapper/generateur utilise
-  const photoJson = {
-    ensemble: {
-      materiau_apparent: R.ensemble?.materiau_apparent || '',
-      particularites: R.ensemble?.particularites || []
+function configAll(){
+  if(!R||!R.elements||R.elements.length===0){alert('Rien à envoyer. Analysez d\'abord une photo.');return}
+  const photoJson={
+    ensemble:{
+      materiau_apparent:R.ensemble?.materiau_apparent||'',
+      particularites:R.ensemble?.particularites||[],
+      dimensions_totales:R.ensemble?.dimensions_totales||{}
     },
-    elements: (R.elements || []).map(el => ({
-      id: el.id,
-      type: el.type,
-      largeur: el.largeur,
-      hauteur: el.hauteur,
-      profondeur: el.profondeur,
-      facade: {
-        type: el.facade?.type,
-        nb_portes: el.facade?.nb_portes || 0,
-        nb_tiroirs: el.facade?.nb_tiroirs || 0,
-        pose: el.facade?.pose || 'applique'
+    elements:(R.elements||[]).map(el=>({
+      id:el.id,type:el.type,
+      largeur:el.largeur,hauteur:el.hauteur,profondeur:el.profondeur,
+      facade:{
+        type:el.facade?.type,
+        nb_portes:el.facade?.nb_portes||0,
+        nb_tiroirs:el.facade?.nb_tiroirs||0,
+        pose:el.facade?.pose||'applique'
       },
-      sous_elements: {
-        MI: el.sous_elements?.MI || 0,
-        PB: el.sous_elements?.PB || 0,
-        PC: el.sous_elements?.PC || 0,
-        TIR: el.sous_elements?.TIR || 0,
-        ETG: el.sous_elements?.ETG || 0,
-        PEND: el.sous_elements?.PEND || 0,
-        PLI: el.sous_elements?.PLI || 'applique'
+      sous_elements:{
+        MI:el.sous_elements?.MI||0,
+        PB:el.sous_elements?.PB||0,
+        PC:el.sous_elements?.PC||0,
+        TIR:el.sous_elements?.TIR||0,
+        ETG:el.sous_elements?.ETG||0,
+        PEND:el.sous_elements?.PEND||0,
+        PLI:el.sous_elements?.PLI||'applique'
       }
     }))
   };
-
-  const jsonStr = JSON.stringify(photoJson);
-  const b64 = btoa(unescape(encodeURIComponent(jsonStr)))
-                .replace(/\+/g, '-').replace(/\//g, '_');
-  const urlFinale = URL_CALCUL + '?photo=' + b64;
-
-  if (urlFinale.length > 7000) {
-    alert('Photo trop complexe pour être envoyée par URL (' + urlFinale.length + ' car). ' +
-          'Nous basculerons vers une solution de stockage local dans une prochaine version.');
+  const jsonStr=JSON.stringify(photoJson);
+  const b64=btoa(unescape(encodeURIComponent(jsonStr))).replace(/\+/g,'-').replace(/\//g,'_');
+  const urlFinale=URL_CALCUL+'?photo='+b64;
+  if(urlFinale.length>7000){
+    alert('Photo trop complexe pour être envoyée par URL ('+urlFinale.length+' car).');
     return;
   }
-
-  window.open(urlFinale, '_blank');
+  window.open(urlFinale,'_blank');
 }
-
-function cpTxt(t){navigator.clipboard.writeText(t).then(()=>alert('✅ Copié ! Collez dans le configurateur.')).catch(()=>prompt('Copiez :',t))}
 </script>
 </body>
 </html>
