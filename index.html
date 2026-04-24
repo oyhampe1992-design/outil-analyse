@@ -386,14 +386,48 @@ function configAll() {
     alert('Rien à envoyer. Analysez d\'abord une photo.');
     return;
   }
-  const photoJson = { ensemble: R.ensemble || {}, elements: R.elements || [] };
+
+  // Elagage : on ne garde que ce que le mapper/generateur utilise
+  const photoJson = {
+    ensemble: {
+      materiau_apparent: R.ensemble?.materiau_apparent || '',
+      particularites: R.ensemble?.particularites || []
+    },
+    elements: (R.elements || []).map(el => ({
+      id: el.id,
+      type: el.type,
+      largeur: el.largeur,
+      hauteur: el.hauteur,
+      profondeur: el.profondeur,
+      facade: {
+        type: el.facade?.type,
+        nb_portes: el.facade?.nb_portes || 0,
+        nb_tiroirs: el.facade?.nb_tiroirs || 0,
+        pose: el.facade?.pose || 'applique'
+      },
+      sous_elements: {
+        MI: el.sous_elements?.MI || 0,
+        PB: el.sous_elements?.PB || 0,
+        PC: el.sous_elements?.PC || 0,
+        TIR: el.sous_elements?.TIR || 0,
+        ETG: el.sous_elements?.ETG || 0,
+        PEND: el.sous_elements?.PEND || 0,
+        PLI: el.sous_elements?.PLI || 'applique'
+      }
+    }))
+  };
+
   const jsonStr = JSON.stringify(photoJson);
   const b64 = btoa(unescape(encodeURIComponent(jsonStr)))
                 .replace(/\+/g, '-').replace(/\//g, '_');
   const urlFinale = URL_CALCUL + '?photo=' + b64;
-  if (urlFinale.length > 1900) {
-    if (!confirm('URL longue (' + urlFinale.length + ' caractères). Continuer ?')) return;
+
+  if (urlFinale.length > 7000) {
+    alert('Photo trop complexe pour être envoyée par URL (' + urlFinale.length + ' car). ' +
+          'Nous basculerons vers une solution de stockage local dans une prochaine version.');
+    return;
   }
+
   window.open(urlFinale, '_blank');
 }
 
