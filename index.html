@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Wooder — Analyse meuble</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',sans-serif;background:#fafaf8;color:#1a1a1a;min-height:100vh}
+.c{max-width:680px;margin:0 auto;padding:16px}
+.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.hd h1{font-size:20px;font-weight:800}
+.hd p{font-size:11px;color:#888;margin-top:2px}
+.mt{display:flex;background:#f0f0f0;border-radius:8px;padding:3px}
+.mb{padding:6px 14px;border:none;border-radius:6px;font-size:12px;font-weight:600;cursor:pointer;background:transparent;color:#888}
+.mb.a{background:#2D5A3D;color:#fff}
+.uz{border:2px dashed #ccc;border-radius:12px;text-align:center;cursor:pointer;background:#fff;margin-bottom:14px;overflow:hidden}
+.uz img{width:100%;display:block;border-radius:10px}
+.uz.np{padding:32px 20px}
+.dims{background:#fff;border:1px solid #e8e4df;border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.dims .ti{font-size:13px;font-weight:700;margin-bottom:4px;color:#2D5A3D}
+.dims .su{font-size:11px;color:#888;margin-bottom:10px}
+.dims .ro{display:flex;gap:8px}
+.dims .fi{flex:1}
+.dims label{font-size:9px;color:#888;text-transform:uppercase;display:block;margin-bottom:2px}
+.dims .in{display:flex;align-items:center;gap:4px}
+.dims input{width:100%;border:1px solid #ddd;border-radius:6px;padding:8px;font-family:'DM Mono',monospace;font-size:14px;text-align:center}
+.dims .un{font-size:10px;color:#aaa}
+.plbk{margin-top:14px;padding-top:12px;border-top:1px dashed #e0ddd8}
+.plbk .tt{font-size:11px;font-weight:700;text-transform:uppercase;color:#2D5A3D;margin-bottom:8px}
+.plbk .rs{display:flex;flex-direction:column;gap:6px}
+.plbk label{display:flex;align-items:center;gap:8px;font-size:12px;color:#333;cursor:pointer;padding:6px 10px;border:1px solid #e0ddd8;border-radius:6px;background:#fafaf8}
+.plbk label:has(input:checked){border-color:#2D5A3D;background:#EEF4F0}
+.plbk input[type=radio]{accent-color:#2D5A3D;margin:0}
+.plbk .hp{display:flex;align-items:center;gap:6px;margin-left:auto;font-size:11px;color:#666}
+.plbk .hp input{width:60px;border:1px solid #ddd;border-radius:4px;padding:3px 6px;font-family:'DM Mono',monospace;font-size:11px;text-align:center}
+.br{display:flex;gap:8px;margin-bottom:16px}
+.btn{padding:12px 16px;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer}
+.bp{background:#2D5A3D;color:#fff;font-size:14px;flex:1}
+.bp:disabled{background:#ccc;cursor:not-allowed}
+.bd{background:#1a1a1a;color:#fff;font-size:14px;width:100%}
+.bs{padding:5px 12px;font-size:11px;font-weight:600;border-radius:6px}
+.bg{background:#f0f0f0;color:#888;border:none}
+.bo{background:#fff;border:1px solid #2D5A3D;color:#2D5A3D}
+.ld{text-align:center;padding:28px;background:#EEF4F0;border-radius:12px;margin-bottom:16px}
+.sp{width:32px;height:32px;border:3px solid #2D5A3D;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.lm{font-size:13px;font-weight:600;color:#2D5A3D}
+.er{padding:12px 16px;background:#FDEDEC;border-radius:10px;margin-bottom:10px;font-size:12px;color:#C0392B}
+.db{padding:10px 14px;background:#FEF3C7;border-radius:10px;margin-bottom:10px;font-family:'DM Mono',monospace;font-size:9px;color:#92400E;word-break:break-all;max-height:150px;overflow:auto}
+.pr{margin-bottom:14px}
+.pr img{width:100%;display:block;border-radius:10px;border:2px solid #2D5A3D}
+.pr .b{display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.pr .b span{font-size:11px;color:#888}
+.eh{background:#1a1a1a;border-radius:12px;padding:16px 18px;margin-bottom:14px;color:#fff}
+.eh h2{font-size:17px;font-weight:800}
+.eh .m{font-size:11px;color:rgba(255,255,255,.45);margin-top:3px}
+.dr{display:flex;gap:8px;margin-top:12px}
+.dr .d{flex:1}
+.dr label{font-size:8px;color:rgba(255,255,255,.35);text-transform:uppercase;display:block}
+.dr input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:6px;padding:6px 8px;font-family:'DM Mono',monospace;font-size:13px;color:#fff;text-align:center}
+.dr .v{padding:6px 8px;font-family:'DM Mono',monospace;font-size:13px;color:rgba(255,255,255,.5);text-align:center}
+.st{display:flex;gap:6px;margin-bottom:14px}
+.s1{flex:1;background:#EEF4F0;border-radius:8px;padding:8px;text-align:center}
+.s2{flex:1;background:#FEF9E7;border-radius:8px;padding:8px;text-align:center}
+.sn{font-family:'DM Mono',monospace;font-size:18px;font-weight:700;color:#2D5A3D}
+.sl{font-size:9px;color:#888;text-transform:uppercase}
+
+/* Carte element */
+.ec{margin-bottom:10px;border:1px solid #e8e4df;border-radius:10px;overflow:hidden;background:#fff}
+.ee{padding:8px 10px;background:#f8f8f4;border-bottom:1px dashed #e0ddd8}
+.er1{display:flex;align-items:center;gap:4px;margin-bottom:6px;flex-wrap:wrap}
+.er1:last-child{margin-bottom:0}
+.ee input[type=text]{flex:1;border:1px solid #ddd;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:600;min-width:80px}
+.ee select{border:1px solid #ddd;border-radius:4px;padding:3px 6px;font-size:10px;background:#fff}
+.ee input[type=number]{width:54px;border:1px solid #ddd;border-radius:4px;padding:3px 4px;font-family:'DM Mono',monospace;font-size:11px;text-align:center}
+.eb{padding:12px 14px}
+
+/* Blocs Structure / Facade / Interieur */
+.bl{margin-bottom:10px;padding:8px 10px;background:#fafaf8;border-radius:8px}
+.bl:last-child{margin-bottom:0}
+.blti{font-size:10px;font-weight:700;text-transform:uppercase;color:#2D5A3D;margin-bottom:6px}
+.blli{font-size:11px;color:#333;display:flex;align-items:center;gap:6px;margin-bottom:4px;flex-wrap:wrap}
+.blli:last-child{margin-bottom:0}
+.blli select{padding:2px 4px;font-size:10px;border:1px solid #ddd;border-radius:4px;background:#fff}
+.valInt{display:inline-block;min-width:20px;text-align:center;font-family:'DM Mono',monospace;font-weight:700;color:#2D5A3D;padding:0 6px}
+
+/* Bouton + / − */
+.elb{padding:3px 8px;background:#fff;border:1px solid #2D5A3D;border-radius:4px;cursor:pointer;font-size:11px;font-weight:700;color:#2D5A3D}
+.elb:hover{background:#EEF4F0}
+.elb:disabled{opacity:.3;cursor:default}
+.elb.dl{border-color:#fca5a5;color:#DC2626}
+.elb.dl:hover{background:#FDEDEC}
+
+/* Ajouter element */
+.as{padding:12px;background:#f8f8f4;border-radius:10px;border:1px dashed #ccc;margin-top:8px;margin-bottom:12px}
+.as .at{font-size:11px;font-weight:600;color:#888;margin-bottom:8px}
+.ab{display:flex;gap:4px;flex-wrap:wrap}
+.ab button{padding:6px 12px;background:#fff;border:1px solid #2D5A3D;border-radius:6px;font-size:11px;color:#2D5A3D;cursor:pointer;font-weight:600}
+
+.lbl{font-size:9px;color:#aaa}
+.dn{display:none!important}
+</style>
+</head>
+<body>
+<div class="c">
+  <div class="hd">
+    <div><h1>THE WOODER</h1><p id="sub">Reproduisez un meuble a partir d'une photo</p></div>
+    <div class="mt">
+      <button class="mb a" onclick="setMode('client',this)">Client</button>
+      <button class="mb" onclick="setMode('menuisier',this)">Menuisier</button>
+    </div>
+  </div>
+
+  <div class="uz np" id="uz" onclick="document.getElementById('fi').click()">
+    <input type="file" id="fi" accept="image/*" style="display:none" onchange="pickFile(this)">
+    <div id="ph"><div style="font-size:36px;margin-bottom:6px">📸</div><div style="font-size:14px;color:#666;font-weight:600">Prenez une photo ou choisissez une image</div></div>
+    <img id="pv" class="dn">
+  </div>
+
+  <div class="dims dn" id="dimsForm">
+    <div class="ti">Dimensions totales du projet</div>
+    <div class="su">Mesurez la largeur, hauteur et profondeur totales de ce que vous voulez reproduire.</div>
+    <div class="ro">
+      <div class="fi">
+        <label>Largeur</label>
+        <div class="in"><input type="number" id="dimL" min="1" max="1000" placeholder="80" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+      <div class="fi">
+        <label>Hauteur</label>
+        <div class="in"><input type="number" id="dimH" min="1" max="1000" placeholder="74" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+      <div class="fi">
+        <label>Profondeur</label>
+        <div class="in"><input type="number" id="dimP" min="1" max="1000" placeholder="40" oninput="checkDims()"><span class="un">cm</span></div>
+      </div>
+    </div>
+
+    <div class="plbk">
+      <div class="tt">Plinthe</div>
+      <div class="rs">
+        <label>
+          <input type="radio" name="plinthe" value="aucune" onchange="checkDims()">
+          <span>Aucune — meuble sans plinthe</span>
+        </label>
+        <label>
+          <input type="radio" name="plinthe" value="encastree" checked onchange="checkDims()">
+          <span>Encastrée</span>
+          <span class="hp">Hauteur <input type="number" id="plH" min="0" max="500" value="100" oninput="checkDims()"> mm</span>
+        </label>
+        <label>
+          <input type="radio" name="plinthe" value="applique" onchange="checkDims()">
+          <span>Applique</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="br dn" id="abr">
+    <button class="btn bp" id="btnAnalyze" onclick="analyze()" disabled>🔍 Analyser le meuble</button>
+    <button class="btn bg bs" onclick="resetAll()">Changer</button>
+  </div>
+
+  <div class="ld dn" id="ldx"><div class="sp"></div><div class="lm" id="lmsg">Analyse...</div></div>
+  <div class="er dn" id="erx"></div>
+  <div class="db dn" id="dbx"></div>
+
+  <div class="dn" id="rx">
+    <div class="pr"><img id="ri"><div class="b"><span>📸 Photo de reference</span><div style="display:flex;gap:6px"><button class="btn bs bo" onclick="analyze()">🔄 Relancer</button><button class="btn bs bg" onclick="resetAll()">Changer</button></div></div></div>
+    <div class="eh"><h2 id="en"></h2><div class="m" id="em"></div>
+      <div class="dr"><div class="d"><label>Largeur</label><input type="number" id="tw" onchange="resizeAll()"></div><div class="d"><label>Hauteur</label><div class="v" id="th"></div></div><div class="d"><label>Profondeur</label><div class="v" id="tp"></div></div></div>
+    </div>
+    <div class="st"><div class="s1"><div class="sn" id="stt">0</div><div class="sl" id="stl">elements</div></div></div>
+    <div style="font-size:13px;font-weight:700;margin-bottom:6px" id="lt"></div>
+    <div id="el"></div>
+    <div class="as"><div class="at">+ Ajouter un element manquant</div><div class="ab">
+      <button onclick="addEl('CB')">+ Caisson bas</button>
+      <button onclick="addEl('CH')">+ Caisson haut</button>
+      <button onclick="addEl('COL')">+ Colonne</button>
+      <button onclick="addEl('NO')">+ Niche ouverte</button>
+      <button onclick="addEl('DC')">+ Demi-colonne</button>
+    </div></div>
+    <button class="btn bd" onclick="configAll()" id="cab" style="margin-top:8px">Configurer tout</button>
+  </div>
+</div>
+
+<script src="js/state.js"></script>
+<script src="js/upload.js"></script>
+<script src="js/prompt.js"></script>
+<script src="js/render.js"></script>
+<script src="js/edit.js"></script>
+<script src="js/analyze.js"></script>
+<script src="js/configAll.js"></script>
+
+</body>
+</html>
